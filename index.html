@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,16 @@
     <link rel="stylesheet" href="shared/css/global.css">
     <style>
         body {
-            background-color: #F5F5F5; /* Eliminamos el gris oscuro para el hub principal */
+            background-color: #F5F5F5;
+            /* Eliminamos el gris oscuro para el hub principal */
         }
+
         .hub-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
+
         .menu-title {
             font-size: 60px;
             font-weight: bold;
@@ -21,6 +25,7 @@
             color: #333;
             text-align: center;
         }
+
         .games-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -28,6 +33,7 @@
             margin-top: 50px;
             padding: 20px;
         }
+
         .game-card {
             background-color: white;
             border: 2px solid black;
@@ -40,15 +46,18 @@
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 6px 6px 0px black;
         }
+
         .game-card:hover {
             transform: translateY(-5px);
             box-shadow: 12px 12px 0px black;
         }
+
         .game-card h2 {
             margin: 0 0 15px 0;
             font-size: 32px;
             color: #6358FF;
         }
+
         .game-card p {
             margin: 0;
             font-size: 20px;
@@ -56,6 +65,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="hub-container">
         <h1 class="menu-title">Math Games Hub</h1>
@@ -64,16 +74,20 @@
                 <h2>Cálculo Mental</h2>
                 <p>Juego de secuencias numéricas (Soroban)</p>
             </a>
-            
+
             <a href="games/sumas/index.html" class="game-card">
                 <h2>Sumas!</h2>
                 <p>Práctica de sumas con opciones múltiples</p>
             </a>
+
+            <a href="games/restas/index.html" class="game-card">
+                <h2>Restas!</h2>
+                <p>Práctica de restas con opciones múltiples</p>
+            </a>
         </div>
-        
-        <div style="text-align:center; padding-top:60px; color: #888; font-size: 20px;">
-            <p>Más juegos próximamente...</p>
-        </div>
+
+
     </div>
 </body>
+
 </html>

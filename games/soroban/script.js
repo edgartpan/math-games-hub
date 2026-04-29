@@ -64,6 +64,7 @@ function displayWithDelay(values, delay, callback) {
 
 function generateSequence(numberOfValues) {
     retro.innerText = "";
+    retro.style.color = "";
     userAnswer.value = "";
 
     valuesToDisplay = [".", "..", "..."];
@@ -101,6 +102,7 @@ function validarRespuesta() {
     if (userValue === finalresult) {
         bien++;
         retro.innerText = "Correcto!";
+        retro.style.color = "#26C5AE";
 
         if (increaseSpeed) {
             delayTime = Math.max(0.1, delayTime * 0.95);
@@ -118,6 +120,7 @@ function validarRespuesta() {
     } else {
         mal++;
         retro.innerText = `Incorrecto. Intenta de nuevo.`;
+        retro.style.color = "#FF2977";
         setTimeout(() => {
             retro.innerText = "";
         }, 3000);

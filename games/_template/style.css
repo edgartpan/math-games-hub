@@ -5,14 +5,14 @@
 }
 
 .btn-opcion {
-  background-color: #6358FF;
-  color: white;
+  background-color: #58FFC2;
+  color: black;
   width: 150px;
   margin: 10px;
 }
 
 .btn-ready {
-  background-color: #FFDD01;
-  color: black;
+  background-color: #6358FF;
+  color: white;
   margin-top: 15px;
 }

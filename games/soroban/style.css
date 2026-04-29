@@ -1,0 +1,233 @@
+.inria-sans-light {
+    font-family: "Inria Sans", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .inria-sans-regular {
+    font-family: "Inria Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .inria-sans-bold {
+    font-family: "Inria Sans", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .inria-sans-light-italic {
+    font-family: "Inria Sans", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  .inria-sans-regular-italic {
+    font-family: "Inria Sans", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  .inria-sans-bold-italic {
+    font-family: "Inria Sans", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+  
+/* General Styles */
+#sub-container {
+    height: 40%;
+    display: block;
+}
+
+.gear{
+    padding-top: 15px;
+} 
+
+#cifras {
+    font-size: 160px;
+    padding-top: 70px;
+}
+
+.retro {
+    font-size: 24px;
+    font-weight: 600;
+    padding-top: 20px;
+    width: 100%;
+}
+
+/*Button styles*/
+.button-3d {
+    width: 200px;
+}
+
+/*Styles per button*/
+
+#generateButton {
+    background-color: #6358FF;
+    color: #ffffff;
+    box-shadow: 5px 5px 0px #000000;
+}
+
+#showResultButton {
+    background-color: #FFDD01;
+    box-shadow: 5px 5px 0px #000000;
+}
+
+#repeatButton {
+    background-color: #58FFC2;
+    box-shadow: 5px 5px 0px #000000;
+}
+
+#validarButton {
+    background-color: #ffffff;
+    box-shadow: 5px 5px 0px #000000;
+}
+
+#settingsButton {
+    background-color: #000000;
+    font-size: 24px;
+    border: none;
+}
+
+#donateButton {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    color: #000000;
+    box-shadow: 5px 5px 0px #000000;
+    font-size: 14px;
+    width: auto;
+    height: auto;
+    padding: 10px 20px;
+}
+
+
+#answerContainer {
+    padding-top: 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+label {
+    display: inline;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#userAnswer {
+    width: 190px;
+    height: 150px;
+    padding: 0px;
+    margin: 15px;
+    text-align: center;
+    font-size: 80px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#userAnswer:focus {
+    border: 1px solid black;
+}
+
+input[type="checkbox"] {
+    width: 50px;
+    padding: 0px;
+    margin: 15px;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"] {
+    font-family: Inria Sans;
+    width: 50px;
+    margin-left: 10px;
+}
+
+.numeros {
+    font-family: Inria Sans;
+    font-size: 120px;
+    display: block;
+}
+
+#controls {
+    display: block;
+    justify-content: space-evenly;
+    padding: 0px;
+}
+
+.subcontrols {
+    display: block;
+    margin: 25px 0px;
+}
+
+#controls button {
+    display: inline-block;
+    /*width: 25%;*/
+}
+
+
+
+
+@media (max-width: 480px) {
+    #controls button {
+        width: auto;
+        margin-bottom: 5px;
+    }
+
+    #answerContainer {
+        padding-top: 20px;
+    }
+
+    label {
+        display: inline;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+
+    .gear{
+        padding-top: 5px;
+    } 
+
+}
+
+@media (min-width: 768px) {
+    #cifras {
+        font-size: 200px;
+        padding-top: 100px;
+    }
+    .retro {
+        font-size: 32px;
+    }
+    #userAnswer {
+        width: 250px;
+        height: 180px;
+        font-size: 100px;
+    }
+    .button-3d {
+        width: 260px;
+    }
+    .numeros {
+        font-size: 180px;
+    }
+}

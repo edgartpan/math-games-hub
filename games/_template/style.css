@@ -1,0 +1,18 @@
+.text {
+  font-size: 40px;
+  font-family: 'Inria Sans', sans-serif;
+  text-align: center;
+}
+
+.btn-opcion {
+  background-color: #6358FF;
+  color: white;
+  width: 150px;
+  margin: 10px;
+}
+
+.btn-ready {
+  background-color: #FFDD01;
+  color: black;
+  margin-top: 15px;
+}

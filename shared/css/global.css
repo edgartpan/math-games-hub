@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Inria Sans', sans-serif;
+    text-align: center;
+    background-color: #B6B6B6;
+}
+
+#container {
+    width: 100%;
+    max-width: 500px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background-color: #F5F5F5;
+    overflow-x: hidden;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* Top Banner */
+.top-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+}
+.top-banner a, .top-banner button {
+    color: black;
+    text-decoration: none;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Inria Sans', sans-serif;
+    padding: 0;
+    font-weight: bold;
+}
+
+/* Score Banner */
+.indicators {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    padding: 10px 15px;
+    font-size: 20px;
+    line-height: 35px;
+    text-align: center;
+}
+
+.indicators_small {
+    font-size: 14px;
+}
+
+/* 3D Button Shared Styles */
+.button-3d {
+    position: relative;
+    font-family: 'Inria Sans', sans-serif;
+    font-size: 23px;
+    text-align: center;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    padding: 15px 10px;
+    margin: 0px 15px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 5px 5px 0px #000000;
+    display: inline-block;
+    background-color: #ffffff;
+}
+
+.button-3d:active {
+    transform: translateX(5px) translateY(5px);
+    box-shadow: 0px 0px 0px #000000;
+}
+
+/* Settings Panel Popup */
+#settingsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+#settingsPanel {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #F5F5F5;
+    padding: 30px;
+    width: 90%;
+    max-width: 300px;
+    z-index: 100;
+    text-align: left;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    line-height: 3;
+    border-radius: 15px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    padding: 0;
+}
+
+@media (max-width: 480px) {
+    .indicators {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    .indicators_small {
+        font-size: 12px;
+    }
+    .button-3d {
+        font-size: 18px;
+    }
+    #settingsPanel {
+        width: 80%;
+        max-width: 250px;
+        top: 10%;
+        line-height: 2.5;
+    }
+}
+
+#inferior {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.donation-banner {
+    width: 100%;
+    background-color: #dfdfdf;
+    padding: 30px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+}
+.donation-banner a {
+    color: #333;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+@media (min-width: 768px) {
+    #container {
+        max-width: 700px;
+    }
+    .top-banner a, .top-banner button {
+        font-size: 22px;
+    }
+    .indicators {
+        font-size: 26px;
+        line-height: 45px;
+    }
+    .indicators_small {
+        font-size: 18px;
+    }
+    .button-3d {
+        font-size: 30px;
+        padding: 20px 15px;
+    }
+    .donation-banner {
+        font-size: 18px;
+    }
+}

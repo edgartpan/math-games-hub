@@ -7,16 +7,16 @@ var btnopcion3 = document.getElementById("btnopcion3");
 var level_ready = document.getElementById("level_ready");
 var retro = document.getElementById("retro");
 var imagen = document.getElementById("img");
-var buenas = document.getElementById("buenas");
-var malas = document.getElementById("malas");
+var racha_ui = document.getElementById("racha_ui");
+var score_ui = document.getElementById("score_ui");
 var difficulty_value = document.getElementById("difficulty");
 
 //initial values
 //  score
-var mal = 0;
-var bien = 0;
-malas.innerHTML=mal;
-buenas.innerHTML=bien;
+var currentScore = 0;
+var currentRacha = 0;
+racha_ui.innerHTML = currentRacha;
+score_ui.innerHTML = currentScore;
 //  difficulty
 var dificultad_set = 5;
 difficulty_value.innerHTML=dificultad_set
@@ -35,16 +35,22 @@ level_ready.addEventListener('click', generate);
 
 //evaluate
 function wrong_answer () {
-    mal = mal+1;
-    malas.innerHTML=mal;
+    currentRacha = 0;
+    racha_ui.innerHTML = currentRacha;
     retro.innerHTML = "¿Segur@?";
     retro.style.color = "#FF2977";
     imagen.src="gifs/no.gif";
 }
 
 function right_answer () {
-    bien = bien+1;
-    buenas.innerHTML=bien;
+    currentRacha++;
+    let multiplier = currentRacha >= 10 ? 2 : (currentRacha >= 5 ? 1.5 : 1);
+    let basePoints = Math.floor(Math.pow(dificultad_set, 1.5));
+    currentScore += Math.floor(basePoints * multiplier);
+    
+    score_ui.innerHTML = currentScore;
+    racha_ui.innerHTML = currentRacha;
+    
     retro.innerHTML = "¡Correcto!";
     retro.style.color = "#26C5AE";
     imagen.src="gifs/si.gif"
@@ -148,4 +154,45 @@ function applySettings() {
 
 function cancelSettings() {
     toggleSettings();
+}
+
+// Arcade Firebase Logic
+async function terminarJuego() {
+    if (currentScore <= 0) {
+        alert("¡Juega un poco más para obtener una puntuación!");
+        return;
+    }
+    
+    const isTop10 = await isHighScore("restas", currentScore);
+    
+    if (isTop10) {
+        document.getElementById("highScoreOverlay").style.display = "block";
+        document.getElementById("highScorePanel").style.display = "block";
+        document.getElementById("initialsInput").focus();
+    } else {
+        alert("¡Juego terminado! Tu puntaje fue: " + currentScore);
+        resetGame();
+    }
+}
+
+async function submitHighScore() {
+    const initials = document.getElementById("initialsInput").value;
+    if (initials.trim().length < 1) return;
+    
+    const settingsStr = "Max: " + dificultad_set;
+    await saveHighScore("restas", initials, currentScore, settingsStr);
+    
+    document.getElementById("highScoreOverlay").style.display = "none";
+    document.getElementById("highScorePanel").style.display = "none";
+    
+    alert("¡Puntuación guardada exitosamente!");
+    resetGame();
+}
+
+function resetGame() {
+    currentScore = 0;
+    currentRacha = 0;
+    score_ui.innerHTML = currentScore;
+    racha_ui.innerHTML = currentRacha;
+    generate();
 }

@@ -185,3 +185,85 @@ body {
         padding: 12px 0;
     }
 }
+
+/* Arcade High Score Modal */
+#highScoreOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    display: none;
+}
+
+#highScorePanel {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #222;
+    padding: 30px;
+    width: 90%;
+    max-width: 350px;
+    z-index: 101;
+    text-align: center;
+    border-radius: 15px;
+    border: 3px solid #FFDD01;
+    box-shadow: 0 0 30px #FFDD01;
+    display: none;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.arcade-title {
+    color: #FFDD01;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+.initials-input {
+    font-size: 40px;
+    font-weight: bold;
+    width: 150px;
+    text-align: center;
+    letter-spacing: 15px;
+    text-transform: uppercase;
+    border: 3px solid #FFDD01;
+    border-radius: 10px;
+    background: #111;
+    color: #58FFC2;
+    margin: 20px 0;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    outline: none;
+}
+
+.initials-input:focus {
+    box-shadow: 0 0 15px #58FFC2;
+}
+
+.arcade-btn {
+    background-color: #FF2977;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 30px;
+    font-size: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 #fff;
+    transition: transform 0.1s;
+}
+
+.arcade-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 #fff;
+}

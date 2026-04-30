@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../shared/css/global.css" />
     <link rel="stylesheet" href="style.css" />
+    
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+    <script src="../../shared/js/firebase-config.js"></script>
+    
     <script src="script.js" defer></script>
   </head>
 
@@ -18,8 +24,8 @@
 
       <!-- Score Banner -->
       <div class="indicators">
-          <span>Correctas <span id="buenas">0</span>&nbsp;&nbsp;-&nbsp;</span>
-          <span><span id="malas">0</span> Incorrectas</span>
+          <span>Racha: <span id="racha_ui" style="color: #58FFC2;">0</span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+          <span>Score: <span id="score_ui" style="color: #FFDD01;">0</span></span>
       </div>
       
       <div style="text-align:center; padding-top: 50px;">
@@ -44,6 +50,7 @@
       
       <div style="text-align: center; margin-top: 30px; margin-bottom: 30px;">
         <button id="level_ready" class="button-3d btn-ready">Generar</button>
+        <button onclick="terminarJuego()" class="button-3d" style="background-color: #FF2977; color: white;">Terminar</button>
       </div>
 
       <div class="donation-banner">
@@ -69,6 +76,17 @@
               <button onclick="applySettings()" class="button-3d" style="width: auto; padding: 10px 40px; font-size: 18px;">OK</button>
           </div>
       </div>
+
+      <!-- Arcade High Score Modal -->
+      <div id="highScoreOverlay"></div>
+      <div id="highScorePanel">
+          <div class="arcade-title">¡NUEVO RÉCORD!</div>
+          <div style="font-size: 16px; margin-bottom: 10px;">Ingresa tus iniciales:</div>
+          <input type="text" id="initialsInput" class="initials-input" maxlength="3" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+          <br>
+          <button onclick="submitHighScore()" class="arcade-btn">Guardar</button>
+      </div>
+
     </div>
   </body>
 </html>

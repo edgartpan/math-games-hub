@@ -16,12 +16,12 @@ var numberOfValues = 4;
 var increaseSpeed = false;
 var increaseSequence = false;
 var valuesToDisplay = [];
-var mal = 0;
-var bien = 0;
+var currentScore = 0;
+var currentRacha = 0;
 var level = 1;
 var valor = 4;
-var buenas = document.getElementById("buenas");
-var malas = document.getElementById("malas");
+var racha_ui = document.getElementById("racha_ui");
+var score_ui = document.getElementById("score_ui");
 var valores = document.getElementById("valores");
 var velocidad = document.getElementById("velocidad");
 var beepSound = new Audio('audio/beep_short.mp3');
@@ -100,7 +100,13 @@ function todo() {
 function validarRespuesta() {
     const userValue = parseInt(userAnswer.value);
     if (userValue === finalresult) {
-        bien++;
+        currentRacha++;
+        let multiplier = 1;
+        if (increaseSpeed) multiplier *= 1.5;
+        if (increaseSequence) multiplier *= 1.5;
+        let basePoints = Math.floor((numberOfValues * maximumValue) / delayTime);
+        currentScore += Math.floor(basePoints * multiplier);
+        
         retro.innerText = "Correcto!";
         retro.style.color = "#26C5AE";
 
@@ -118,7 +124,7 @@ function validarRespuesta() {
             retro.innerText = "";
         }, 3000);
     } else {
-        mal++;
+        currentRacha = 0;
         retro.innerText = `Incorrecto. Intenta de nuevo.`;
         retro.style.color = "#FF2977";
         setTimeout(() => {
@@ -150,8 +156,8 @@ function updateUI() {
     document.getElementById("numCount").value = numberOfValues;
     document.getElementById("valores").innerHTML = numberOfValues;
     document.getElementById("velocidad").innerHTML = delayTime.toFixed(2);
-    buenas.innerHTML = bien;
-    malas.innerHTML = mal;
+    racha_ui.innerHTML = currentRacha;
+    score_ui.innerHTML = currentScore;
 }
 
 function toggleSettings() {
@@ -173,4 +179,45 @@ function cancelSettings() {
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Arcade Firebase Logic
+async function terminarJuego() {
+    if (currentScore <= 0) {
+        alert("¡Juega un poco más para obtener una puntuación!");
+        return;
+    }
+    
+    const isTop10 = await isHighScore("soroban", currentScore);
+    
+    if (isTop10) {
+        document.getElementById("highScoreOverlay").style.display = "block";
+        document.getElementById("highScorePanel").style.display = "block";
+        document.getElementById("initialsInput").focus();
+    } else {
+        alert("¡Juego terminado! Tu puntaje fue: " + currentScore);
+        resetGame();
+    }
+}
+
+async function submitHighScore() {
+    const initials = document.getElementById("initialsInput").value;
+    if (initials.trim().length < 1) return;
+    
+    const settingsStr = `Cif:${numberOfValues},Max:${maximumValue}`;
+    await saveHighScore("soroban", initials, currentScore, settingsStr);
+    
+    document.getElementById("highScoreOverlay").style.display = "none";
+    document.getElementById("highScorePanel").style.display = "none";
+    
+    alert("¡Puntuación guardada exitosamente!");
+    resetGame();
+}
+
+function resetGame() {
+    currentScore = 0;
+    currentRacha = 0;
+    racha_ui.innerHTML = currentRacha;
+    score_ui.innerHTML = currentScore;
+    todo();
 }

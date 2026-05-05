@@ -1,3 +1,4 @@
+let isGameTerminated = false;
 var cifras = document.getElementById("cifras");
 var resultado = document.getElementById("resultado");
 var answerContainer = document.getElementById("answerContainer");
@@ -183,6 +184,7 @@ function getRandomInt(min, max) {
 
 // Arcade Firebase Logic
 async function terminarJuego() {
+    isGameTerminated = true;
     if (currentScore <= 0) {
         alert("¡Juega un poco más para obtener una puntuación!");
         return;
@@ -215,6 +217,7 @@ async function submitHighScore() {
 }
 
 function resetGame() {
+    isGameTerminated = false;
     currentScore = 0;
     currentRacha = 0;
     racha_ui.innerHTML = currentRacha;

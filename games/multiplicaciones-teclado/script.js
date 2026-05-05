@@ -1,5 +1,6 @@
 let isGameTerminated = false;
 //get elements from HTML
+var userAnswer = document.getElementById("userAnswer");
 var divsumando1 = document.getElementById("divsumando1");
 var divsumando2 = document.getElementById("divsumando2");
 var btnopcion1 = document.getElementById("btnopcion1");
@@ -74,68 +75,34 @@ retro.innerHTML="&nbsp;";
 retro.style.color="";
 imagen.src="gifs/neutral.gif";
 
-//generate random values to add, and put them in the HTML
-let num1 = Math.floor((Math.random() * dificultad_set) + 1);
-let num2 = Math.floor((Math.random() * dificultad_set) + 1);
-
-// Ensure sumando1 is the larger number to avoid negative results
-sumando1 = Math.max(num1, num2);
-sumando2 = Math.min(num1, num2);
-
+//generate random values to multiply
+sumando1 = Math.floor((Math.random() * dificultad_set) + 1);
+sumando2 = Math.floor((Math.random() * dificultad_set) + 1);
 divsumando1.innerHTML = sumando1;
 divsumando2.innerHTML = sumando2;
 
 //define right and wrong answers
-correcto = sumando1 - sumando2;
+correcto = sumando1 * sumando2;
 
-let rank = Math.floor(Math.random() * 3); // 0 = correct is lowest, 1 = middle, 2 = highest
-
-let inc1, inc2;
-if (rank === 0) {
-    // Correct is lowest: we need two unique higher numbers
-    inc1 = correcto + Math.floor(Math.random() * 3) + 1; 
-    inc2 = inc1 + Math.floor(Math.random() * 3) + 1; 
-} else if (rank === 2) {
-    // Correct is highest: we need two unique lower numbers
-    inc1 = correcto - Math.floor(Math.random() * 3) - 1; 
-    inc2 = inc1 - Math.floor(Math.random() * 3) - 1; 
-    
-    // Prevent zero or negative options
-    if (inc2 <= 0) {
-        inc1 = correcto + Math.floor(Math.random() * 3) + 1;
-        inc2 = inc1 + Math.floor(Math.random() * 3) + 1;
-    }
-} else {
-    // Correct is middle: one lower, one higher
-    inc1 = correcto - Math.floor(Math.random() * 3) - 1;
-    inc2 = correcto + Math.floor(Math.random() * 3) + 1;
-    
-    // Prevent zero or negative options
-    if (inc1 <= 0) {
-        inc1 = correcto + Math.floor(Math.random() * 3) + 1;
-        inc2 = inc1 + Math.floor(Math.random() * 3) + 1;
-    }
+userAnswer.value = "";
+userAnswer.focus();
 }
 
-let opciones = [correcto, inc1, inc2];
-
-// Sort them numerically so the options look ordered on screen from left to right
-opciones.sort((a, b) => a - b);
-
-btnopcion1.innerHTML = opciones[0];
-btnopcion2.innerHTML = opciones[1];
-btnopcion3.innerHTML = opciones[2];
-}
-  
-//validate buttons 
-function checkAnswer(btnNum) {
-    var selectedBtn = document.getElementById("btnopcion" + btnNum);
-    if (selectedBtn.innerText == correcto){
-      right_answer()
+function validar() {
+    let val = parseFloat(userAnswer.value);
+    if (isNaN(val)) return;
+    if (val === correcto) {
+        right_answer();
     } else {
-      wrong_answer()
+        currentRacha = 0;
+        racha_ui.innerHTML = currentRacha;
+        retro.innerHTML = "Era " + correcto;
+        retro.style.color = "#FF2977";
+        imagen.src = "gifs/no.gif";
+        userAnswer.value = "";
+        userAnswer.focus();
     }
-  }
+}
 
 //call main function
 generate();
@@ -175,7 +142,7 @@ async function terminarJuego() {
         return;
     }
     
-    const isTop10 = await isHighScore("restas", currentScore);
+    const isTop10 = await isHighScore("multiplicaciones-teclado", currentScore);
     
     if (isTop10) {
         document.getElementById("highScoreOverlay").style.display = "block";
@@ -192,7 +159,7 @@ async function submitHighScore() {
     if (initials.trim().length < 1) return;
     
     const settingsStr = "Max: " + dificultad_set;
-    await saveHighScore("restas", initials, currentScore, settingsStr);
+    await saveHighScore("multiplicaciones-teclado", initials, currentScore, settingsStr);
     
     document.getElementById("highScoreOverlay").style.display = "none";
     document.getElementById("highScorePanel").style.display = "none";
@@ -221,7 +188,7 @@ async function showLeaderboard() {
     document.getElementById("leaderboardOverlay").style.display = "block";
     document.getElementById("leaderboardPanel").style.display = "block";
     
-    let scores = await getTopScores("restas");
+    let scores = await getTopScores("multiplicaciones-teclado");
     let html = "";
     if (scores.length === 0) {
         html = "<p>No hay puntuaciones aún.</p>";
@@ -243,7 +210,7 @@ function hideLeaderboard() {
 }
 
 async function loadHighestScore() {
-    let top = await getTopScores("restas");
+    let top = await getTopScores("multiplicaciones-teclado");
     if (top.length > 0 && document.getElementById("highscore_ui")) {
         document.getElementById("highscore_ui").innerText = top[0].score;
     }

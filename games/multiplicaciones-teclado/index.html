@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <title>Multiplicaciones! (Teclado)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../../shared/css/global.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="../../shared/js/firebase-config.js"></script>
+
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div id="container">
+    <!-- Top Banner -->
+    <div class="top-banner">
+      <a href="../../index.html">&lt; Volver a inicio</a>
+      <button onclick="toggleSettings()">⚙️ Ajustes</button>
+    </div>
+
+    <!-- Score Banner -->
+    <div class="indicators"
+      style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; align-items: center; padding: 10px;">
+      <span>Racha: <span id="racha_ui" style="color: #58FFC2;">0</span></span>
+      <span>Score: <span id="score_ui" style="color: #FFDD01;">0</span></span>
+      <span>Récord: <span id="highscore_ui" style="color: #FF2977;">0</span></span>
+      <button onclick="showLeaderboard()" class="button-3d"
+        style="font-size: 14px; padding: 5px 15px; margin: 0; box-shadow: 2px 2px 0 #000;">🏆 Top 10</button>
+    </div>
+
+    <div style="text-align:center; padding-top: 20px;">
+      <span id="divsumando1" class="text"></span>
+      <span class="text">x</span>
+      <span id="divsumando2" class="text"></span>
+      <span class="text">=</span>
+    </div>
+
+    <div id="controls"
+      style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px;">
+      <input type="number" id="userAnswer"
+        style="width: 190px; height: 150px; font-size: 80px; text-align: center; margin-bottom: 20px; border: 1px solid black; border-radius: 10px;"
+        autocomplete="off">
+      <button onclick="validar()" class="button-3d"
+        style="background-color: #ffffff; color: black; box-shadow: 5px 5px 0px #000000; font-size: 24px; font-weight: bold; width: 200px; padding: 15px;">Validar</button>
+    </div>
+    <br>
+
+    <div>
+      <img id="img" class="image" src="gifs/neutral.gif" alt="Feedback">
+    </div>
+    <div id="retro" class="text-retro">&nbsp;</div>
+
+    <div style="text-align: center; margin-top: -10px; margin-bottom: 30px;">
+      <button id="level_ready" class="button-3d btn-ready">Generar</button>
+      <button onclick="terminarJuego()" class="button-3d"
+        style="background-color: #FF2977; color: white;">Terminar</button>
+    </div>
+
+    <div class="donation-banner">
+      Si esta aplicación te resultó útil, puedes <a href="https://paypal.me/edgartpan?country.x=MX&locale.x=es_XC"
+        target="_blank">donar aquí</a>
+    </div>
+
+    <!-- Settings Overlay + Panel -->
+    <div id="settingsOverlay" style="display: none;"></div>
+    <div id="settingsPanel" style="display: none;">
+      <button onclick="cancelSettings()" class="close-btn">&#x2715;</button>
+      <div class="title" style="text-align:center; font-weight:bold; font-size:22px; margin-bottom: 20px;">
+        <span>Ajustes</span>
+      </div>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="difficulty-label" style="font-size: 18px;">Valor máximo de los números:</div>
+        <div style="margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+          <button id="baja" onclick="decrease()" class="button-3d"
+            style="width: 50px; padding: 0; font-size: 30px; line-height: 50px; height: 50px; min-width: unset;">-</button>
+          <input type="number" id="difficulty" class="text"
+            style="width: 100px; height: 50px; font-size:30px; text-align: center; border: 2px solid #ccc; border-radius: 8px; margin: 0; padding: 0;"
+            onchange="updateDifficulty(this.value)">
+          <button id="sube" onclick="increase()" class="button-3d"
+            style="width: 50px; padding: 0; font-size: 30px; line-height: 50px; height: 50px; min-width: unset;">+</button>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <button onclick="applySettings()" class="button-3d"
+          style="width: auto; padding: 10px 40px; font-size: 18px;">OK</button>
+      </div>
+    </div>
+
+    <!-- High Score Modal -->
+    <div id="highScoreOverlay"></div>
+    <div id="highScorePanel">
+      <button onclick="cancelHighScore()" class="close-btn">&#x2715;</button>
+      <div class="title" style="text-align:center; font-weight:bold; font-size:22px; margin-bottom: 20px;">¡Nuevo
+        Récord!</div>
+      <div style="font-size: 16px; margin-bottom: 10px;">Ingresa tu nombre:</div>
+      <input type="text" id="initialsInput" class="name-input" maxlength="15" autocomplete="off"
+        placeholder="Tu nombre...">
+      <button onclick="submitHighScore()" class="button-3d"
+        style="width: auto; padding: 10px 40px; margin-top: 10px;">Guardar</button>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardOverlay"></div>
+    <div id="leaderboardPanel">
+      <button onclick="hideLeaderboard()" class="close-btn">&#x2715;</button>
+      <div class="title" style="text-align:center; font-weight:bold; font-size:22px; margin-bottom: 20px;">Mejores
+        Puntuaciones</div>
+      <div id="leaderboardContent">Cargando...</div>
+    </div>
+
+  </div>
+</body>
+
+</html>

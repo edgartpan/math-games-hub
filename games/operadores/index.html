@@ -68,11 +68,11 @@
               <span>Ajustes</span>
           </div>
           <div style="text-align: center; margin-bottom: 20px;">
-              <div class="difficulty-label" style="font-size: 18px;">Valor máximo de los sumandos</div>
-              <div style="margin-top: 15px;">
-                  <button id="baja" onclick="decrease()" class="button-3d btn-control">-</button>
-                  <span id="difficulty" style="font-size:30px; margin: 0 15px;">5</span>
-                  <button id="sube" onclick="increase()" class="button-3d btn-control">+</button>
+              <div class="difficulty-label" style="font-size: 18px;">Valor máximo de los números:</div>
+              <div style="margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                  <button id="baja" onclick="decrease()" class="button-3d" style="width: 50px; padding: 0; font-size: 30px; line-height: 50px; height: 50px; min-width: unset;">-</button>
+                  <input type="number" id="difficulty" class="text" style="width: 100px; height: 50px; font-size:30px; text-align: center; border: 2px solid #ccc; border-radius: 8px; margin: 0; padding: 0;" onchange="updateDifficulty(this.value)">
+                  <button id="sube" onclick="increase()" class="button-3d" style="width: 50px; padding: 0; font-size: 30px; line-height: 50px; height: 50px; min-width: unset;">+</button>
               </div>
           </div>
           <div style="text-align: center;">

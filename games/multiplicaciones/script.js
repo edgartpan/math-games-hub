@@ -74,48 +74,30 @@ retro.innerHTML="&nbsp;";
 retro.style.color="";
 imagen.src="gifs/neutral.gif";
 
-//generate random values to add, and put them in the HTML
-let num1 = Math.floor((Math.random() * dificultad_set) + 1);
-let num2 = Math.floor((Math.random() * dificultad_set) + 1);
-
-// Ensure sumando1 is the larger number to avoid negative results
-sumando1 = Math.max(num1, num2);
-sumando2 = Math.min(num1, num2);
-
+//generate random values to multiply
+sumando1 = Math.floor((Math.random() * dificultad_set) + 1);
+sumando2 = Math.floor((Math.random() * dificultad_set) + 1);
 divsumando1.innerHTML = sumando1;
 divsumando2.innerHTML = sumando2;
 
 //define right and wrong answers
-correcto = sumando1 - sumando2;
+correcto = sumando1 * sumando2;
 
-let rank = Math.floor(Math.random() * 3); // 0 = correct is lowest, 1 = middle, 2 = highest
+let rank = Math.floor(Math.random() * 3);
 
 let inc1, inc2;
-if (rank === 0) {
-    // Correct is lowest: we need two unique higher numbers
-    inc1 = correcto + Math.floor(Math.random() * 3) + 1; 
-    inc2 = inc1 + Math.floor(Math.random() * 3) + 1; 
-} else if (rank === 2) {
-    // Correct is highest: we need two unique lower numbers
-    inc1 = correcto - Math.floor(Math.random() * 3) - 1; 
-    inc2 = inc1 - Math.floor(Math.random() * 3) - 1; 
-    
-    // Prevent zero or negative options
-    if (inc2 <= 0) {
-        inc1 = correcto + Math.floor(Math.random() * 3) + 1;
-        inc2 = inc1 + Math.floor(Math.random() * 3) + 1;
+let genInc = () => {
+    let wrong = (sumando1 + Math.floor(Math.random() * 4) - 2) * (sumando2 + Math.floor(Math.random() * 4) - 2);
+    if (wrong === correcto || wrong <= 0) {
+        wrong = correcto + Math.floor(Math.random() * 10) + 1;
     }
-} else {
-    // Correct is middle: one lower, one higher
-    inc1 = correcto - Math.floor(Math.random() * 3) - 1;
-    inc2 = correcto + Math.floor(Math.random() * 3) + 1;
-    
-    // Prevent zero or negative options
-    if (inc1 <= 0) {
-        inc1 = correcto + Math.floor(Math.random() * 3) + 1;
-        inc2 = inc1 + Math.floor(Math.random() * 3) + 1;
-    }
-}
+    return wrong;
+};
+
+inc1 = genInc();
+inc2 = genInc();
+while(inc1 === inc2 || inc1 === correcto) inc1 = genInc();
+while(inc2 === inc1 || inc2 === correcto) inc2 = genInc();
 
 let opciones = [correcto, inc1, inc2];
 
@@ -175,7 +157,7 @@ async function terminarJuego() {
         return;
     }
     
-    const isTop10 = await isHighScore("restas", currentScore);
+    const isTop10 = await isHighScore("multiplicaciones", currentScore);
     
     if (isTop10) {
         document.getElementById("highScoreOverlay").style.display = "block";
@@ -192,7 +174,7 @@ async function submitHighScore() {
     if (initials.trim().length < 1) return;
     
     const settingsStr = "Max: " + dificultad_set;
-    await saveHighScore("restas", initials, currentScore, settingsStr);
+    await saveHighScore("multiplicaciones", initials, currentScore, settingsStr);
     
     document.getElementById("highScoreOverlay").style.display = "none";
     document.getElementById("highScorePanel").style.display = "none";
@@ -221,7 +203,7 @@ async function showLeaderboard() {
     document.getElementById("leaderboardOverlay").style.display = "block";
     document.getElementById("leaderboardPanel").style.display = "block";
     
-    let scores = await getTopScores("restas");
+    let scores = await getTopScores("multiplicaciones");
     let html = "";
     if (scores.length === 0) {
         html = "<p>No hay puntuaciones aún.</p>";
@@ -243,7 +225,7 @@ function hideLeaderboard() {
 }
 
 async function loadHighestScore() {
-    let top = await getTopScores("restas");
+    let top = await getTopScores("multiplicaciones");
     if (top.length > 0 && document.getElementById("highscore_ui")) {
         document.getElementById("highscore_ui").innerText = top[0].score;
     }

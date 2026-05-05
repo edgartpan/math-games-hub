@@ -1,3 +1,4 @@
+let isGameTerminated = false;
 //get elements from HTML
 var divsumando1 = document.getElementById("divsumando1");
 var divsumando2 = document.getElementById("divsumando2");
@@ -66,6 +67,7 @@ var sumando1, sumando2, error1, error2, sorteo, correcto, incorrecto1, incorrect
 
 //variables sumas
 function generate () {
+    if(isGameTerminated) return;
 
 //reset feedback
 retro.innerHTML="&nbsp;";
@@ -131,6 +133,15 @@ function toggleSettings() {
     overlay.style.display = isVisible ? "none" : "block";
 }
 
+function updateDifficulty(val) {
+    let num = parseInt(val);
+    if (!isNaN(num) && num >= 10) {
+        dificultad_set = num;
+    } else {
+        difficulty.value = dificultad_set;
+    }
+}
+
 function applySettings() {
     generate();
     toggleSettings();
@@ -142,6 +153,7 @@ function cancelSettings() {
 
 // Arcade Firebase Logic
 async function terminarJuego() {
+    isGameTerminated = true;
     if (currentScore <= 0) {
         alert("¡Juega un poco más para obtener una puntuación!");
         return;
@@ -174,6 +186,7 @@ async function submitHighScore() {
 }
 
 function resetGame() {
+    isGameTerminated = false;
     currentScore = 0;
     currentRacha = 0;
     score_ui.innerHTML = currentScore;

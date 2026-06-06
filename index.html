@@ -143,7 +143,7 @@
             },
             {
                 id: "sumas-teclado",
-                name: "Sumas (Teclado)",
+                name: "Sumas",
                 symbol: "+K",
                 url: "games/sumas-teclado/index.html",
                 level: 1,
@@ -156,7 +156,7 @@
             },
             {
                 id: "restas-teclado",
-                name: "Restas (Teclado)",
+                name: "Restas",
                 symbol: "−K",
                 url: "games/restas-teclado/index.html",
                 level: 1,
@@ -208,7 +208,7 @@
             },
             {
                 id: "multiplicaciones-teclado",
-                name: "Multiplicaciones (Teclado)",
+                name: "Multiplicaciones",
                 symbol: "×K",
                 url: "games/multiplicaciones-teclado/index.html",
                 level: 2,
@@ -221,7 +221,7 @@
             },
             {
                 id: "divisiones-teclado",
-                name: "Divisiones (Teclado)",
+                name: "Divisiones",
                 symbol: "÷K",
                 url: "games/divisiones-teclado/index.html",
                 level: 2,
@@ -491,7 +491,7 @@
                         section.innerHTML = `
                             <h2 class="group-title font-heading">
                                 ${lvl.title}
-                                <span class="badge" style="background-color: ${lvl.color}; border: 2px solid var(--border);">Lvl ${lvl.id}</span>
+                                <span class="badge" style="background-color: ${lvl.color}; border: 2px solid var(--border); color: ${lvl.id === 1 ? '#000000' : '#FFFFFF'} !important;">Lvl ${lvl.id}</span>
                             </h2>
                             <p style="color: var(--text-muted); margin-top: -12px; margin-bottom: 25px; font-size: 0.95rem;">${lvl.desc}</p>
                         `;

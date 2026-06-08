@@ -25,32 +25,20 @@
         <header class="hero">
             <h1 class="hero-title">Math Games <span>Hub</span></h1>
             <p class="hero-subtitle">
-                El centro definitivo de juegos matemáticos interactivos. Desafía tu mente, mejora tu agilidad numérica y compite por los récords globales.
+                Juegos matemáticos de nivel primaria, donde puedes competir y guardar tu récord.
             </p>
-            
-            <div class="hero-controls">
-                <button class="neobrutal-btn-large btn-accent" onclick="openLeaderboardModal()">
-                    Récords Globales
-                </button>
-            </div>
         </header>
 
         <!-- Filters and Controls -->
         <section class="control-bar">
             <div class="filter-group">
-                <span class="control-label">Ordenar juegos por:</span>
-                <button id="filter-nivel" class="filter-btn active" onclick="switchView('nivel')">
-                    Por Nivel
-                </button>
-                <button id="filter-categoria" class="filter-btn" onclick="switchView('categoria')">
-                    Por Categoría
-                </button>
-                <button id="filter-tipo" class="filter-btn" onclick="switchView('tipo')">
-                    Por Respuesta
-                </button>
-                <button id="filter-todos" class="filter-btn" onclick="switchView('todos')">
-                    Todos los Juegos
-                </button>
+                <label for="view-select" class="control-label">Ordenar juegos por:</label>
+                <select id="view-select" class="neobrutal-select" onchange="switchView(this.value)">
+                    <option value="nivel">Por Nivel</option>
+                    <option value="categoria">Por Categoría</option>
+                    <option value="tipo">Por Respuesta</option>
+                    <option value="todos">Todos los Juegos</option>
+                </select>
             </div>
         </section>
 
@@ -70,28 +58,6 @@
         <footer class="footer">
             <p>© 2026 Math Games Hub. Desarrollado con pasión matemática.</p>
         </footer>
-    </div>
-
-    <!-- Global Leaderboard Modal -->
-    <div class="modal-overlay" id="leaderboard-modal-overlay" onclick="handleOverlayClick(event)">
-        <div class="neobrutal-modal">
-            <div class="modal-header">
-                <h2 class="modal-title font-heading">Récords Globales</h2>
-                <button class="modal-close" onclick="closeLeaderboardModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="dropdown-container">
-                    <label for="leaderboard-game-select" class="dropdown-label">Selecciona el juego</label>
-                    <select id="leaderboard-game-select" class="neobrutal-select" onchange="loadLeaderboardData()">
-                        <!-- Loaded dynamically -->
-                    </select>
-                </div>
-                
-                <div class="leaderboard-content" id="leaderboard-content">
-                    <!-- Leaderboard scores rendered here -->
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Donation banner anchored to the bottom -->
@@ -334,7 +300,6 @@
         // Initialize elements
         document.addEventListener('DOMContentLoaded', () => {
             initBackgroundMath();
-            initLeaderboardSelect();
             renderGames();
             loadAllHighestScores();
         });
@@ -399,7 +364,7 @@
             
             if (score !== null && score !== undefined) {
                 el.innerHTML = `
-                    <span class="record-label">Récord actual: <span class="record-value">${score} pts</span></span>
+                    <span class="record-label">Récord: <span class="record-value">${score} pts</span></span>
                     <span class="record-name">${escapeHtml(name)}</span>
                 `;
             } else {
@@ -412,10 +377,6 @@
         // View Toggling
         function switchView(viewType) {
             currentView = viewType;
-            
-            // Toggle active classes on buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`filter-${viewType}`).classList.add('active');
             
             // Show category subfilters if view is 'todos'
             const subFilters = document.getElementById('sub-filters');
@@ -447,28 +408,133 @@
             renderGames();
         }
 
-        // Game Rendering engine
-        function renderGames() {
+        // Collapsible Accordion logic
+        function toggleAccordion(groupId) {
+            const header = document.getElementById(`acc-header-${groupId}`);
+            const content = document.getElementById(`acc-content-${groupId}`);
+            if (!header || !content) return;
+            
+            const chevron = header.querySelector('.chevron');
+            const isActive = content.classList.contains('active');
+            
+            if (isActive) {
+                content.classList.remove('active');
+                header.classList.remove('active');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('active');
+                header.classList.add('active');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Render groups inside accordions
+        function renderGroupedSections(groups, filterField) {
             const container = document.getElementById('games-container');
             container.innerHTML = '';
             
-            // Apply category filters
-            const filteredGames = GAMES.filter(game => {
-                const matchesCategory = currentCategoryFilter === 'all' || game.category === currentCategoryFilter;
-                return matchesCategory;
+            let renderedCount = 0;
+            
+            groups.forEach(group => {
+                const groupGames = GAMES.filter(game => {
+                    const matchesCategory = currentCategoryFilter === 'all' || game.category === currentCategoryFilter;
+                    
+                    let matchesGroup = false;
+                    if (filterField === 'level') {
+                        matchesGroup = game.level === group.id;
+                    } else if (filterField === 'category') {
+                        matchesGroup = game.category === group.id;
+                    } else if (filterField === 'responseType') {
+                        matchesGroup = game.responseType === group.id;
+                    }
+                    
+                    return matchesGroup && matchesCategory;
+                });
+                
+                if (groupGames.length > 0) {
+                    renderedCount++;
+                    const isFirst = renderedCount === 1;
+                    
+                    const accordionWrapper = document.createElement('div');
+                    accordionWrapper.className = 'accordion-wrapper';
+                    
+                    // Create accordion header
+                    const header = document.createElement('div');
+                    header.className = `accordion-header ${isFirst ? 'active' : ''}`;
+                    header.id = `acc-header-${group.id}`;
+                    header.onclick = () => toggleAccordion(group.id);
+                    
+                    let badgeHtml = '';
+                    if (filterField === 'level') {
+                        badgeHtml = `<span class="badge" style="background-color: ${group.color}; border: 2px solid var(--border); color: ${group.id === 1 ? '#000000' : '#FFFFFF'} !important;">Lvl ${group.id}</span>`;
+                    }
+                    
+                    header.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            ${badgeHtml}
+                            <span>${group.title}</span>
+                        </div>
+                        <div class="chevron" style="transform: ${isFirst ? 'rotate(180deg)' : 'rotate(0deg)'};">▼</div>
+                    `;
+                    
+                    // Create accordion content
+                    const content = document.createElement('div');
+                    content.className = `accordion-content ${isFirst ? 'active' : ''}`;
+                    content.id = `acc-content-${group.id}`;
+                    
+                    if (group.desc) {
+                        const descEl = document.createElement('p');
+                        descEl.style.color = 'var(--text-muted)';
+                        descEl.style.fontSize = '0.85rem';
+                        descEl.style.marginBottom = '12px';
+                        descEl.innerText = group.desc;
+                        content.appendChild(descEl);
+                    }
+                    
+                    // Create card grid
+                    const grid = document.createElement('div');
+                    grid.className = 'games-grid';
+                    groupGames.forEach(game => {
+                        grid.appendChild(createCard(game));
+                    });
+                    
+                    content.appendChild(grid);
+                    accordionWrapper.appendChild(header);
+                    accordionWrapper.appendChild(content);
+                    container.appendChild(accordionWrapper);
+                }
             });
-
-            if (filteredGames.length === 0) {
-                container.innerHTML = `
-                    <div class="no-results font-heading">
-                        <p style="font-size: 1.5rem; margin-bottom: 10px;">No se encontraron juegos</p>
-                        <p style="font-weight: normal; font-size: 1rem; color: var(--text-muted);">Prueba limpiando los filtros seleccionados.</p>
-                    </div>
-                `;
-                return;
+            
+            if (renderedCount === 0) {
+                renderEmptyState();
             }
+        }
 
+        function renderEmptyState() {
+            const container = document.getElementById('games-container');
+            container.innerHTML = `
+                <div class="no-results font-heading">
+                    <p style="font-size: 1.3rem; margin-bottom: 8px;">No se encontraron juegos</p>
+                    <p style="font-weight: normal; font-size: 0.9rem; color: var(--text-muted);">Prueba limpiando los filtros seleccionados.</p>
+                </div>
+            `;
+        }
+
+        // Game Rendering engine
+        function renderGames() {
             if (currentView === 'todos') {
+                const container = document.getElementById('games-container');
+                container.innerHTML = '';
+                
+                const filteredGames = GAMES.filter(game => {
+                    return currentCategoryFilter === 'all' || game.category === currentCategoryFilter;
+                });
+
+                if (filteredGames.length === 0) {
+                    renderEmptyState();
+                    return;
+                }
+
                 const grid = document.createElement('div');
                 grid.className = 'games-grid';
                 filteredGames.forEach(game => {
@@ -482,78 +548,21 @@
                     { id: 3, title: 'Nivel 3: Desafío Mental', desc: 'Lógica, relaciones inversas y agilidad extrema', color: 'var(--lvl-3-accent)' },
                     { id: 4, title: 'Nivel 4: Experimento Visual', desc: 'Geometría y lógica visual interactiva', color: 'var(--lvl-4-accent)' }
                 ];
-
-                levels.forEach(lvl => {
-                    const lvlGames = filteredGames.filter(g => g.level === lvl.id);
-                    if (lvlGames.length > 0) {
-                        const section = document.createElement('div');
-                        section.className = 'level-group-section';
-                        section.innerHTML = `
-                            <h2 class="group-title font-heading">
-                                ${lvl.title}
-                                <span class="badge" style="background-color: ${lvl.color}; border: 2px solid var(--border); color: ${lvl.id === 1 ? '#000000' : '#FFFFFF'} !important;">Lvl ${lvl.id}</span>
-                            </h2>
-                            <p style="color: var(--text-muted); margin-top: -12px; margin-bottom: 25px; font-size: 0.95rem;">${lvl.desc}</p>
-                        `;
-                        const grid = document.createElement('div');
-                        grid.className = 'games-grid';
-                        lvlGames.forEach(game => {
-                            grid.appendChild(createCard(game));
-                        });
-                        section.appendChild(grid);
-                        container.appendChild(section);
-                    }
-                });
+                renderGroupedSections(levels, 'level');
             } else if (currentView === 'categoria') {
                 const categories = [
-                    { id: 'aritmetica', title: 'Aritmética', desc: 'Operaciones básicas de suma, resta, multiplicación y división, tanto de opción múltiple como de respuesta abierta.' },
+                    { id: 'aritmetica', title: 'Aritmética', desc: 'Suma, resta, multiplicación y división, tanto de opción múltiple como de respuesta abierta.' },
                     { id: 'comparacion', title: 'Fracciones y Magnitudes', desc: 'Comparación de valores y operaciones con fracciones.' },
                     { id: 'logica', title: 'Lógica e Incógnitas', desc: 'Cálculo mental, secuencias lógicas y resolución de ecuaciones.' },
                     { id: 'visual', title: 'Visual y Medición', desc: 'Lectura del reloj analógico y geometría visual.' }
                 ];
-
-                categories.forEach(cat => {
-                    const catGames = filteredGames.filter(g => g.category === cat.id);
-                    if (catGames.length > 0) {
-                        const section = document.createElement('div');
-                        section.className = 'level-group-section';
-                        section.innerHTML = `
-                            <h2 class="group-title font-heading">${cat.title}</h2>
-                            <p style="color: var(--text-muted); margin-top: -12px; margin-bottom: 25px; font-size: 0.95rem;">${cat.desc}</p>
-                        `;
-                        const grid = document.createElement('div');
-                        grid.className = 'games-grid';
-                        catGames.forEach(game => {
-                            grid.appendChild(createCard(game));
-                        });
-                        section.appendChild(grid);
-                        container.appendChild(section);
-                    }
-                });
+                renderGroupedSections(categories, 'category');
             } else if (currentView === 'tipo') {
                 const types = [
-                    { id: 'multiple', title: 'Opción Múltiple', desc: 'Juegos interactivos donde seleccionas la respuesta correcta entre varias opciones predefinidas.' },
-                    { id: 'abierta', title: 'Respuesta Abierta', desc: 'Juegos de alta agilidad mental donde escribes directamente el resultado numérico exacto usando el teclado.' }
+                    { id: 'multiple', title: 'Opción Múltiple', desc: 'Selecciona la respuesta correcta entre varias opciones predefinidas.' },
+                    { id: 'abierta', title: 'Respuesta Abierta', desc: 'Escribe directamente el resultado numérico exacto usando el teclado.' }
                 ];
-
-                types.forEach(t => {
-                    const typeGames = filteredGames.filter(g => g.responseType === t.id);
-                    if (typeGames.length > 0) {
-                        const section = document.createElement('div');
-                        section.className = 'level-group-section';
-                        section.innerHTML = `
-                            <h2 class="group-title font-heading">${t.title}</h2>
-                            <p style="color: var(--text-muted); margin-top: -12px; margin-bottom: 25px; font-size: 0.95rem;">${t.desc}</p>
-                        `;
-                        const grid = document.createElement('div');
-                        grid.className = 'games-grid';
-                        typeGames.forEach(game => {
-                            grid.appendChild(createCard(game));
-                        });
-                        section.appendChild(grid);
-                        container.appendChild(section);
-                    }
-                });
+                renderGroupedSections(types, 'responseType');
             }
         }
 
@@ -564,10 +573,11 @@
             card.setAttribute('data-level', game.level);
             card.setAttribute('data-id', game.id);
 
+            const responseTypeShort = game.responseType === 'multiple' ? 'Opción' : 'Abierta';
+
             const badgesHtml = `
-                <span class="badge-tag badge-level">Nivel ${game.level}</span>
-                <span class="badge-tag">${game.categoryName}</span>
-                <span class="badge-tag">${game.responseTypeName}</span>
+                <span class="badge-tag badge-level">N${game.level}</span>
+                <span class="badge-tag">${responseTypeShort}</span>
             `;
 
             // Retrieve score record from cache
@@ -576,7 +586,7 @@
             if (record) {
                 if (record.score !== null) {
                     recordHtml = `
-                        <span class="record-label">Récord actual: <span class="record-value">${record.score} pts</span></span>
+                        <span class="record-label">Récord: <span class="record-value">${record.score} pts</span></span>
                         <span class="record-name">${escapeHtml(record.name)}</span>
                     `;
                 } else {
@@ -585,117 +595,27 @@
             }
 
             card.innerHTML = `
-                <div class="card-badges">
-                    ${badgesHtml}
-                </div>
-                <div class="card-header-block">
+                <div class="card-left-block">
                     <div class="game-icon-new">${game.symbol}</div>
-                    <div class="game-title-block">
-                        <h3 class="font-heading">${game.name}</h3>
-                    </div>
                 </div>
-                <div class="game-description">
-                    ${game.desc}
-                </div>
-                <div class="card-footer">
-                    <div class="card-record" id="record-${game.id}">
-                        ${recordHtml}
+                <div class="card-right-block">
+                    <div class="card-header-row">
+                        <div class="card-title-block">
+                            <h3 class="font-heading">${game.name}</h3>
+                        </div>
+                        <div class="card-badges-row">
+                            ${badgesHtml}
+                        </div>
                     </div>
-                    <span class="play-action">Jugar ahora ➜</span>
+                    <div class="card-footer-row">
+                        <div class="card-record" id="record-${game.id}">
+                            ${recordHtml}
+                        </div>
+                        <span class="play-action">Jugar ➜</span>
+                    </div>
                 </div>
             `;
             return card;
-        }
-
-        // Leaderboards dynamic modal
-        function initLeaderboardSelect() {
-            const select = document.getElementById('leaderboard-game-select');
-            select.innerHTML = '';
-            GAMES.forEach(game => {
-                const opt = document.createElement('option');
-                opt.value = game.id;
-                opt.innerText = `${game.symbol} ${game.name}`;
-                select.appendChild(opt);
-            });
-        }
-
-        // Modal triggers
-        function openLeaderboardModal() {
-            document.getElementById('leaderboard-modal-overlay').classList.add('active');
-            loadLeaderboardData();
-        }
-
-        function closeLeaderboardModal() {
-            document.getElementById('leaderboard-modal-overlay').classList.remove('active');
-        }
-
-        function handleOverlayClick(event) {
-            if (event.target === document.getElementById('leaderboard-modal-overlay')) {
-                closeLeaderboardModal();
-            }
-        }
-
-        async function loadLeaderboardData() {
-            const gameId = document.getElementById('leaderboard-game-select').value;
-            const contentDiv = document.getElementById('leaderboard-content');
-            
-            contentDiv.innerHTML = `
-                <div class="lb-loader">
-                    <div class="spinner"></div>
-                    <p>Obteniendo puntuaciones...</p>
-                </div>
-            `;
-            
-            try {
-                if (typeof getTopScores === 'undefined') {
-                    throw new Error("SDK de Firebase no inicializado.");
-                }
-                const scores = await getTopScores(gameId);
-                
-                if (scores.length === 0) {
-                    contentDiv.innerHTML = `
-                        <div class="lb-loader">
-                            <p style="font-size: 2rem;">🎮</p>
-                            <p>¡Nadie ha registrado un récord aún!</p>
-                            <p style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted); margin-top: 5px;">Sé el primero en registrar una puntuación.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let html = '<div style="display:flex; flex-direction:column; gap: 8px;">';
-                scores.forEach((s, idx) => {
-                    let rankBadge = `#${idx + 1}`;
-                    let rankColor = 'var(--text)';
-                    
-                    if (idx === 0) { rankBadge = '#1'; rankColor = 'var(--lvl-1-accent)'; }
-                    else if (idx === 1) { rankBadge = '#2'; rankColor = 'var(--primary)'; }
-                    else if (idx === 2) { rankBadge = '#3'; rankColor = 'var(--secondary)'; }
-                    
-                    const settingsStr = s.settings ? `<span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-left: 5px;">(${s.settings})</span>` : '';
-                    
-                    html += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding: 12px 6px; font-family: 'Space Grotesk', sans-serif; font-weight: 700;">
-                            <div style="display:flex; align-items:center; gap: 10px;">
-                                <span style="color: ${rankColor}; font-size:1.05rem; width: 65px; display:inline-block;">${rankBadge}</span>
-                                <span style="color: var(--text); font-size:1rem;">${escapeHtml(s.name)}${settingsStr}</span>
-                            </div>
-                            <div style="font-size: 1.25rem; color: var(--secondary);">${Math.floor(s.score)}</div>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                contentDiv.innerHTML = html;
-                
-            } catch (err) {
-                console.error(err);
-                contentDiv.innerHTML = `
-                    <div class="lb-loader">
-                        <p style="color: var(--secondary);">⚠️ Error al cargar puntuaciones</p>
-                        <p style="font-size: 0.85rem; font-weight: normal; text-align: center;">Verifica tu conexión de internet.</p>
-                    </div>
-                `;
-            }
         }
 
         function escapeHtml(str) {
